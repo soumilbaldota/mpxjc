@@ -1,5 +1,5 @@
 {
-  "name": "graal-native-reader",
+  "name": "mpxj-node",
   "version": "1.0.0",
   "description": "Node.js addon for GraalVM native project reader",
   "main": "index.js",
