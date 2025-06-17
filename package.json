@@ -1,0 +1,19 @@
+{
+  "name": "graal-native-reader",
+  "version": "1.0.0",
+  "description": "Node.js addon for GraalVM native project reader",
+  "main": "index.js",
+  "scripts": {
+    "install": "node-gyp rebuild",
+    "build": "node-gyp build",
+    "clean": "node-gyp clean",
+    "configure": "node-gyp configure"
+  },
+  "dependencies": {
+    "node-addon-api": "^7.0.0"
+  },
+  "devDependencies": {
+    "node-gyp": "^10.0.0"
+  },
+  "gypfile": true
+}

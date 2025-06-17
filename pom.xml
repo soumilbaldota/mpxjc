@@ -1,6 +1,6 @@
-<project xmlns="https://maven.apache.org/POM/3.2.3"
-         xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=
-"https://maven.apache.org/POM/3.2.3 http://maven.apache.org/maven-v3_2_3.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <url>http://maven.apache.org</url>
     <packaging>jar</packaging>
@@ -14,6 +14,7 @@
         <native.maven.plugin.version>0.10.6</native.maven.plugin.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
@@ -21,6 +22,12 @@
             <groupId>net.sf.mpxj</groupId>
             <artifactId>mpxj</artifactId>
             <version>14.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.sdk</groupId>
+            <artifactId>graal-sdk</artifactId>
+            <version>22.3.2</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -46,7 +53,7 @@
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
                         <version>${native.maven.plugin.version}</version>
-                        <extensions>true</extensions>
+                        <extensions>true</extensions>                        
                         <executions>
                             <execution>
                                 <id>build-native</id>
@@ -55,19 +62,16 @@
                                 </goals>
                                 <phase>package</phase>
                             </execution>
-                        </executions>
-                        <configuration>
+                        </executions>                            <configuration>
                             <sharedLibrary>true</sharedLibrary>
+                            <imageName>libnativeprojectreader</imageName>
+                            <quickBuild>true</quickBuild>
                             <buildArgs>
                                 <buildArg>--shared</buildArg>
                                 <buildArg>-H:Name=libnativeprojectreader</buildArg>
-                                <buildArg>-H:Path=${project.build.directory}/native</buildArg>
+                                <buildArg>-H:Path=${project.basedir}/include</buildArg>
                                 <buildArg>-H:+ReportExceptionStackTraces</buildArg>
-                                <buildArg>-H:+PrintAnalysisCallTree</buildArg>
-                                <buildArg>--enable-monitoring</buildArg>
-                                <buildArg>--verbose</buildArg>
-                                <buildArg>--initialize-at-build-time=org.sqlite.util.ProcessRunner</buildArg>
-                                <buildArg>--initialize-at-build-time=java.awt.Color</buildArg>
+                                <buildArg>--initialize-at-build-time=org.sqlite.util.ProcessRunner,java.awt.Color,java.awt.Toolkit,com.soul</buildArg>
                                 <buildArg>-Djava.awt.headless=false</buildArg>
                                 <buildArg>-J-Dfile.encoding=UTF-8</buildArg>
                                 <buildArg>-H:+AddAllCharsets</buildArg>
@@ -79,41 +83,11 @@
                                 <!-- Enable parallel GC for build process -->
                                 <buildArg>-J-XX:+UseParallelGC</buildArg>
                                 <buildArg>-J-XX:ParallelGCThreads=4</buildArg>
-                                <!-- Comment these below options for linux builds -->
-
-                                <!-- <buildArg>-H:NativeLinkerOption=/export:JDK_LoadSystemLibrary</buildArg> 
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_CallMethodByName</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_CallMethodByNameV</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_CallStaticMethodByName</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_ClassString</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_GetEnv</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_GetFieldByName</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_GetStaticFieldByName</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_IsInstanceOfByName</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_NewObjectByName</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_NewStringPlatform</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_SetFieldByName</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_ThrowArrayIndexOutOfBoundsException</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_ThrowByName</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_ThrowIOException</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_ThrowIllegalArgumentException</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_ThrowInternalError</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_ThrowNullPointerException</buildArg>  
-                                <buildArg>-H:NativeLinkerOption=/export:JNU_ThrowOutOfMemoryError</buildArg> -->
-  
                             </buildArgs>
-                            <jvmArgs>
-                                <arg>-Xmx6g</arg>
-                                <arg>-Xms2g</arg>
-                                <arg>-XX:+UseParallelGC</arg>
-                                <arg>-XX:ParallelGCThreads=4</arg>
-                            </jvmArgs>
-                        </configuration>                    
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
         </profile>
     </profiles>
-
-
 </project>
