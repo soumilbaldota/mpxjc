@@ -6,6 +6,11 @@ on:
       - 'v*' # This will trigger the workflow when you push a tag that starts with 'v'
   workflow_dispatch: # Keep manual trigger for testing
 
+# Add permissions needed for releases
+permissions:
+  contents: write
+  packages: write
+  
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
