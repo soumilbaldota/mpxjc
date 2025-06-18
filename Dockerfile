@@ -25,7 +25,6 @@ RUN ./mvnw clean package -Pnative
 # Copy Node.js native addon files
 COPY binding.gyp .
 COPY src/binding.cpp src/
-COPY include/ include/
 COPY index.* .
 COPY package.json .
 COPY package-lock.json .
