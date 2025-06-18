@@ -1,14 +1,13 @@
-name: Build and Package
+name: Build and Release Package
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-  workflow_dispatch:
+    tags:
+      - 'v*' # This will trigger the workflow when you push a tag that starts with 'v'
+  workflow_dispatch: # Keep manual trigger for testing
 
 jobs:
-  build:
+  build-and-release:
     runs-on: ubuntu-latest
     
     steps:
@@ -29,10 +28,19 @@ jobs:
         docker stop ${container_id}
         docker rm ${container_id}
         echo "Container removed"
-        
-    - name: Upload tarball as artifact
-      uses: actions/upload-artifact@v4
+    
+    - name: Get version from tag
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
       with:
-        name: mpxj-node-package
-        path: ./dist/mpxj-node-1.0.0.tgz
-        if-no-files-found: error
+        files: ./dist/mpxj-node-1.0.0.tgz
+        name: Release ${{ steps.get_version.outputs.VERSION }}
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
