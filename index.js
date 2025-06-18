@@ -1,4 +1,4 @@
-const graalReader = require('./build/Release/graal_reader.node');
+const mpxjNode = require('./build/Release/mpxj_node.node');
 // /**
 //  * Synchronously read project with the given filter
 //  * @param {string} filter - The filter string to pass to readProject
@@ -8,7 +8,16 @@ function readProjectSync(filter) {
     if (typeof filter !== 'string') {
         throw new TypeError('Filter must be a string');
     }
-    return graalReader.readProjectSync(filter);
+    const result = mpxjNode.readProjectSync(filter);
+    // Parse the Buffer as JSON
+    if (Buffer.isBuffer(result)) {
+        try {
+            return JSON.parse(result.toString());
+        } catch (err) {
+            throw new Error(`Failed to parse result as JSON: ${err.message}`);
+        }
+    }
+    return result;
 }
 
 /**
@@ -23,13 +32,30 @@ function readProjectAsync(filter, callback) {
     if (typeof callback !== 'function') {
         throw new TypeError('Callback must be a function');
     }
-    return graalReader.readProjectAsync(filter, callback);
+    return mpxjNode.readProjectAsync(filter, (err, result) => {
+        if (err) {
+            callback(err, null);
+            return;
+        }
+        
+        // Parse the Buffer as JSON
+        if (Buffer.isBuffer(result)) {
+            try {
+                const parsedResult = JSON.parse(result.toString());
+                callback(null, parsedResult);
+            } catch (parseErr) {
+                callback(new Error(`Failed to parse result as JSON: ${parseErr.message}`), null);
+            }
+        } else {
+            callback(null, result);
+        }
+    });
 }
 
 /**
  * Promise-based async version
  * @param {string} filter - The filter string to pass to readProject
- * @returns {Promise<number>} Promise that resolves to number of entries
+ * @returns {Promise<object>} Promise that resolves to the parsed JSON result
  */
 function readProject(filter) {
     return new Promise((resolve, reject) => {

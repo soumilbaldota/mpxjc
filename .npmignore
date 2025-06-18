@@ -1,2 +1,12 @@
-!build/
-!include/
+# Ignore everything
+*
+
+# But include these files/directories
+!index.js
+!index.d.ts
+!binding.gyp
+!src/
+!include/*.h
+!include/*.so*
+!build/Release/*.node
+!build/Release/*.so*

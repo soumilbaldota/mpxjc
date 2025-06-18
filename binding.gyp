@@ -1,13 +1,14 @@
 {
   "targets": [
     {
-      "target_name": "graal_reader",
+      "target_name": "mpxj_node",
       "sources": [
         "src/binding.cpp"
       ],
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")",
-        "include"
+        "<(module_root_dir)/include",
+        "include",
       ],
       "libraries": [],
       "dependencies": [
@@ -37,21 +38,22 @@
             }
           }
         }],
-        ["OS=='mac'", {
-          "libraries": [
-            "-L<(module_root_dir)/include",
-            "-lnativeprojectreader"
-          ],
-          "xcode_settings": {
-            "GCC_ENABLE_CPP_EXCEPTIONS": "YES",
-            "CLANG_CXX_LIBRARY": "libc++",
-            "MACOSX_DEPLOYMENT_TARGET": "10.7"
-          }
-        }],
         ["OS=='linux'", {
           "libraries": [
             "-L<(module_root_dir)/include",
             "-lnativeprojectreader"
+          ],
+          "copies": [
+            {
+              "destination": "<(module_root_dir)/build/Release/",
+              "files": [
+                "<!@(find <(module_root_dir)/include -name '*.so' -o -name '*.so.*' 2>/dev/null || echo '')"
+              ]
+            }
+          ],
+          "ldflags": [
+            "-Wl,-rpath,'$$ORIGIN'",
+            "-Wl,-rpath,'$$ORIGIN/../include'"
           ]
         }]
       ]

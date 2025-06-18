@@ -71,7 +71,8 @@
                                 <buildArg>-H:Name=libnativeprojectreader</buildArg>
                                 <buildArg>-H:Path=${project.basedir}/include</buildArg>
                                 <buildArg>-H:+ReportExceptionStackTraces</buildArg>
-                                <buildArg>--initialize-at-build-time=org.sqlite.util.ProcessRunner,java.awt.Color,java.awt.Toolkit,com.soul</buildArg>
+                                <buildArg>--initialize-at-build-time=org.sqlite.util.ProcessRunner,com.soul</buildArg>
+                                <buildArg>--initialize-at-run-time=java.awt.Color,java.awt.Toolkit</buildArg>
                                 <buildArg>-Djava.awt.headless=false</buildArg>
                                 <buildArg>-J-Dfile.encoding=UTF-8</buildArg>
                                 <buildArg>-H:+AddAllCharsets</buildArg>
