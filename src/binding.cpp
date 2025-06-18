@@ -112,4 +112,4 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     return exports;
 }
 
-NODE_API_MODULE(graal_reader, Init)
+NODE_API_MODULE(mpxj_node, Init)

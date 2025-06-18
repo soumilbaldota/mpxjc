@@ -1,0 +1,49 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Docker Image",
+            "type": "shell",
+            "command": "docker build -t mpxjc:latest .",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Copy Tarball from Docker",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "-c",
+                "container_id=$(docker run -d mpxjc:latest tail -f /dev/null) && echo \"Container started with ID: ${container_id}\" && sleep 2 && mkdir -p ./dist && docker cp ${container_id}:/project/mpxj-node-1.0.0.tgz ./dist/ && echo \"Copied tarball to ./dist/\" && docker stop ${container_id} && docker rm ${container_id} && echo \"Container removed\""
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build and Copy Tarball",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Build Docker Image",
+                "Copy Tarball from Docker"
+            ],
+            "group": {
+                "kind": "build"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
