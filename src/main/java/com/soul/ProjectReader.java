@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-public class LibEnvMap {
+public class ProjectReader {
 
     private static byte[] resultBuffer = null;
 
