@@ -7,7 +7,8 @@
       ],
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")",
-        "<(module_root_dir)/include"
+        "<(module_root_dir)/include",
+        "include",
       ],
       "libraries": [],
       "dependencies": [
@@ -34,9 +35,9 @@
           "msvs_settings": {
             "VCCLCompilerTool": {
               "ExceptionHandling": 1
-            } 
+            }
           }
-        }],      
+        }],
         ["OS=='linux'", {
           "libraries": [
             "-L<(module_root_dir)/include",
