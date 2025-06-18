@@ -1,0 +1,38 @@
+name: Build and Package
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Build Docker image
+      run: docker build -t mpxjc:latest .
+      
+    - name: Extract tarball from Docker container
+      run: |
+        container_id=$(docker run -d mpxjc:latest tail -f /dev/null)
+        echo "Container started with ID: ${container_id}"
+        sleep 2
+        mkdir -p ./dist
+        docker cp ${container_id}:/project/mpxj-node-1.0.0.tgz ./dist/
+        echo "Copied tarball to ./dist/"
+        docker stop ${container_id}
+        docker rm ${container_id}
+        echo "Container removed"
+        
+    - name: Upload tarball as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: mpxj-node-package
+        path: ./dist/mpxj-node-1.0.0.tgz
+        if-no-files-found: error
